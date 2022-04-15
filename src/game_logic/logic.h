@@ -3,31 +3,26 @@
 #include <iostream>
 #include <array>
 #include <memory>
+#include "body.h"
+#include "snake.h"
+#include "food.h"
+#include "player.h"
 
-struct Body {
-    struct Point {
-        int X;
-        int Y;
-    };
-
-    std::string body;
-};
-
-class logic {
+class Logic {
 private:
-    // TODO: struct
     static const int BOARD_X = 50;
     static const int BOARD_Y = 25;
     std::unique_ptr<std::array<std::array<std::string, BOARD_X>, BOARD_Y>> board;
 
 public:
-    logic(): board{std::make_unique<std::array<std::array<std::string, BOARD_X>, BOARD_Y>>()} {}
+    Logic(): board{std::make_unique<std::array<std::array<std::string, BOARD_X>, BOARD_Y>>()} {}
 
     void setup();
-    void load_board();
-    void load_food();
-    void load_snake();
-    void load_player();
+    void load_board(Snake* snake, Food* food);
+    void display_game_state();
+
+    bool validate_snake(int num);
+    void move_snake(Player* player, Snake* snake);
 };
 
 

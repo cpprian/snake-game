@@ -4,20 +4,19 @@
 #include <iostream>
 #include <memory>
 
-class player {
+class Player {
 private:
     std::unique_ptr<int> score;
     bool isGame;
 
 public:
-    player(): score{std::make_unique<int>()} {
+    Player(): score{std::make_unique<int>()} {
         isGame = true;
     }
 
 public:
     int getScore();
     void setScore(const int& s);
-    bool isRunning();
 };
 
 

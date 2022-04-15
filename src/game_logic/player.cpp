@@ -1,13 +1,9 @@
 #include "player.h"
 
-int player::getScore() {
+int Player::getScore() {
     return *score;
 }
 
-void player::setScore(const int& s) {
+void Player::setScore(const int& s) {
     *score = s;
-}
-
-bool player::isRunning() {
-    return false;
 }

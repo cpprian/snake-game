@@ -1,23 +1,22 @@
 #ifndef SNAKE_GAME_FOOD_H
 #define SNAKE_GAME_FOOD_H
 
-#include "logic.h"
+#include "body.h"
 #include <iostream>
 #include <memory>
 
-enum POINT{APPLE=1, BONUS, BROCCOLI};
-
-class food {
+class Food {
 private:
-
-
-    std::unique_ptr<Body> foodPoint;
+    std::shared_ptr<Body> foodPoint;
 
 public:
-    food(): foodPoint{std::make_unique<Body>()} {};
+    Food(): foodPoint{std::make_unique<Body>()} {
+        foodPoint->body = "@";
+    };
 
-    bool isExist();
-    void putFood();
+    void put_food();
+    void set_food(const int& X, const int& Y);
+    std::shared_ptr<Body> get_food();
 };
 
 

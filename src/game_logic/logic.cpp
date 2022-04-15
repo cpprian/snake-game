@@ -1,8 +1,8 @@
 #include <iomanip>
-#include <random>
 #include "logic.h"
+#include <unistd.h>
 
-void logic::load_board() {
+void Logic::load_board(Snake* snake, Food* food) {
     int check_frame = 1;
 
     for (auto& x: *board) {
@@ -17,6 +17,27 @@ void logic::load_board() {
         check_frame++;
     }
 
+    for (auto& x: *(snake->get_snake_body())) {
+        board->at(x.point.Y).at(x.point.X) = x.body;
+        std::cout << board->at(x.point.Y).at(x.point.X) << "\n";
+    }
+
+    std::shared_ptr<Body> pFood = food->get_food();
+    int x_check;
+    int y_check;
+    while (true) {
+        x_check = pFood->point.X;
+        y_check = pFood->point.Y;
+        if (board->at(y_check).at(x_check) == " ") {
+            board->at(pFood->point.Y).at(pFood->point.X) = pFood->body;
+            break;
+        }
+        pFood = food->get_food();
+    }
+}
+
+void Logic::display_game_state() {
+    std::system("clear");
     for (auto& x: *board) {
         std::cout << std::setw(20);
         for (auto& y: x) {
@@ -26,20 +47,34 @@ void logic::load_board() {
     }
 }
 
-void logic::load_snake() {
-    // TODO: load snake
+void Logic::move_snake(Player* player, Snake* snake) {
+
 }
 
-void logic::load_food() {
-    // TODO: load food
+bool Logic::validate_snake(int num) {
+    if (num == 5) {
+        return false;
+    }
+    return true;
 }
 
-void logic::load_player() {
-    // TODO: load player
-}
+void Logic::setup() {
+    auto snake = new Snake();
+    auto food = new Food();
+    auto player = new Player();
 
-void logic::setup() {
-    load_board();
-    load_food();
-    load_snake();
+    snake->create_snake();
+    int i = 0;
+    while(validate_snake(i++)) {
+        move_snake(player, snake);
+        load_board(snake, food);
+        display_game_state();
+        snake->grow_snake();
+        unsigned int microsecond = 500000;
+        usleep(microsecond);
+    }
+
+    delete player;
+    delete snake;
+    delete food;
 }

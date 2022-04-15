@@ -1,33 +1,40 @@
 #include "snake.h"
 
-void snake::create_snake() {
-
+void Snake::create_snake() {
+    for (int i = 0; i < minSize; i++) {
+        if (i == 0) {
+            snake_body->emplace_back(Body::Point{setX, setY}, "W");
+        } else {
+            snake_body->emplace_back(Body::Point{setX, setY+i}, "o");
+        }
+    }
 }
 
-void snake::move_snake() {
-
+std::shared_ptr<std::vector<Body>> Snake::get_snake_body() {
+    return snake_body;
 }
 
-bool snake::validate_snake() {
-    return false;
+int Snake::getVelocity() {
+    return velocity;
 }
 
-int snake::getVelocity() {
-    return *velocity;
+void Snake::setVelocity(const int& v) {
+    velocity = v;
 }
 
-void snake::setVelocity(const int& v) {
-    *velocity = v;
+void Snake::grow_snake() {
+    // copy last snake element with coordinates
+    Body coord = snake_body->back();
+
+    snake_body->emplace_back(Body::Point{coord.point.X, coord.point.Y+1}, coord.body);
 }
 
-void snake::grow_snake() {
-
+// TODO: implement & food
+void Snake::shrink_snake() {
+    snake_body->pop_back();
 }
 
-void snake::shrink_snake() {
-
-}
-
-void snake::accelerate_snake() {
-
+void Snake::accelerate_snake() {
+    int velocity = getVelocity() + 1;
+    setVelocity(velocity);
 }

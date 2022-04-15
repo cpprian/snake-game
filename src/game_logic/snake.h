@@ -1,22 +1,26 @@
 #ifndef SNAKE_GAME_SNAKE_H
 #define SNAKE_GAME_SNAKE_H
 
+#include "body.h"
+#include <memory>
 #include <vector>
-#include "logic.h"
 
-class snake {
+class Snake {
 private:
-    std::unique_ptr<int> velocity;
-    std::unique_ptr<std::vector<Body>> snake_body;
+    const int setX = 15;
+    const int setY = 15;
+    const int minSize = 5;
+
+    int velocity;
+    std::shared_ptr<std::vector<Body>> snake_body;
 
 public:
-    snake():
-        velocity{std::make_unique<int>()},
-        snake_body{std::make_unique<std::vector<Body>>()} {};
+    Snake():
+        velocity{0},
+        snake_body{std::make_shared<std::vector<Body>>()} {};
 
     void create_snake();
-    void move_snake();
-    bool validate_snake();
+    std::shared_ptr<std::vector<Body>> get_snake_body();
     int getVelocity();
     void setVelocity(const int& v);
     void grow_snake();
