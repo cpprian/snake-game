@@ -7,12 +7,9 @@
 class Player {
 private:
     std::unique_ptr<int> score;
-    bool isGame;
 
 public:
-    Player(): score{std::make_unique<int>()} {
-        isGame = true;
-    }
+    Player(): score{std::make_unique<int>(0)} {}
 
 public:
     int getScore();

@@ -26,6 +26,7 @@ public:
     void grow_snake();
     void shrink_snake();
     void accelerate_snake();
+    void change_direction(Body::Point point);
 };
 
 

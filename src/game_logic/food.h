@@ -7,15 +7,19 @@
 
 class Food {
 private:
+    bool isEaten;
     std::shared_ptr<Body> foodPoint;
 
 public:
-    Food(): foodPoint{std::make_unique<Body>()} {
+    Food():
+        isEaten{true},
+        foodPoint{std::make_unique<Body>()} {
         foodPoint->body = "@";
     };
 
+    bool getIsEaten();
+    void setIsEaten(bool f);
     void put_food();
-    void set_food(const int& X, const int& Y);
     std::shared_ptr<Body> get_food();
 };
 

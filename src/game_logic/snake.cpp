@@ -38,3 +38,16 @@ void Snake::accelerate_snake() {
     int velocity = getVelocity() + 1;
     setVelocity(velocity);
 }
+
+void Snake::change_direction(Body::Point point) {
+    Body coord = snake_body->front();
+    coord.body = "o";
+    Body temp;
+    snake_body->front().point = point;
+
+    for (long unsigned int i = 1; i < snake_body->size(); i++) {
+        temp = coord;
+        coord = snake_body->at(i);
+        snake_body->at(i) = temp;
+    }
+}

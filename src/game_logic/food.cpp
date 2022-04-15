@@ -13,11 +13,19 @@ void Food::put_food() {
 }
 
 std::shared_ptr<Body> Food::get_food() {
-    put_food();
+    if (isEaten) {
+        put_food();
+        isEaten = false;
+    }
     return foodPoint;
 }
 
-void Food::set_food(const int &x, const int &y) {
-    foodPoint->point.X = x;
-    foodPoint->point.Y = y;
+void Food::setIsEaten(bool f) {
+    isEaten = f;
 }
+
+bool Food::getIsEaten() {
+    return isEaten;
+}
+
+

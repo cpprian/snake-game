@@ -1,9 +1,14 @@
 #include <iomanip>
 #include "logic.h"
 #include <unistd.h>
+#include <Windows.h>
+#include <chrono>
+#include <thread>
 
 void Logic::load_board(Snake* snake, Food* food) {
     int check_frame = 1;
+    int x_check;
+    int y_check;
 
     for (auto& x: *board) {
         if (check_frame != 1 && check_frame != 25) {
@@ -17,14 +22,20 @@ void Logic::load_board(Snake* snake, Food* food) {
         check_frame++;
     }
 
+
     for (auto& x: *(snake->get_snake_body())) {
+        x_check = x.point.X;
+        y_check = x.point.Y;
+        if (board->at(y_check).at(x_check) == "#"
+            || board->at(y_check).at(x_check) == "o"
+            || board->at(y_check).at(x_check) == "W")
+        {
+            validateSnake = false;
+        }
         board->at(x.point.Y).at(x.point.X) = x.body;
-        std::cout << board->at(x.point.Y).at(x.point.X) << "\n";
     }
 
     std::shared_ptr<Body> pFood = food->get_food();
-    int x_check;
-    int y_check;
     while (true) {
         x_check = pFood->point.X;
         y_check = pFood->point.Y;
@@ -37,7 +48,7 @@ void Logic::load_board(Snake* snake, Food* food) {
 }
 
 void Logic::display_game_state() {
-    std::system("clear");
+    std::system("cls");
     for (auto& x: *board) {
         std::cout << std::setw(20);
         for (auto& y: x) {
@@ -47,15 +58,71 @@ void Logic::display_game_state() {
     }
 }
 
-void Logic::move_snake(Player* player, Snake* snake) {
-
+void Logic::move_snake(Player* player, Snake* snake, Food* food) {
+    Body::Point p = {snake->get_snake_body()->front().point};
+    if (GetAsyncKeyState((unsigned short)'A') & 0x8000) {
+        p.X--;
+        is_snake_eat(p, food, snake, player);
+        snake->change_direction(p);
+        dirSnake = LEFT;
+    } else if (GetAsyncKeyState((unsigned short)'W') & 0x8000) {
+        p.Y--;
+        is_snake_eat(p, food, snake, player);
+        snake->change_direction(p);
+        dirSnake = UP;
+    } else if (GetAsyncKeyState((unsigned short)'S') & 0x8000) {
+        p.Y++;
+        is_snake_eat(p, food, snake, player);
+        snake->change_direction(p);
+        dirSnake = DOWN;
+    } else if (GetAsyncKeyState((unsigned short)'D') & 0x8000) {
+        p.X++;
+        is_snake_eat(p, food, snake, player);
+        snake->change_direction(p);
+        dirSnake = RIGHT;
+    } else {
+        switch(dirSnake) {
+            case UP:
+                p.Y--;
+                is_snake_eat(p, food, snake, player);
+                snake->change_direction(p);
+                break;
+            case DOWN:
+                p.Y++;
+                is_snake_eat(p, food, snake, player);
+                snake->change_direction(p);
+                break;
+            case LEFT:
+                p.X--;
+                is_snake_eat(p, food, snake, player);
+                snake->change_direction(p);
+                break;
+            case RIGHT:
+                p.X++;
+                is_snake_eat(p, food, snake, player);
+                snake->change_direction(p);
+                break;
+        }
+    }
 }
 
-bool Logic::validate_snake(int num) {
-    if (num == 5) {
+bool Logic::validate_snake(bool v, Player* player, Snake* snake) {
+    if (!v) {
+        std::cout << std::setw(50) << "GAME OVER\n";
+        std::cout << std::setw(50) << "You score: " << player->getScore() << "\n";
+        std::cout << std::setw(50) << "The length of snake " << snake->get_snake_body()->size() << "\n";
         return false;
     }
     return true;
+}
+
+void Logic::is_snake_eat(Body::Point point, Food* food, Snake* snake, Player* player) {
+    if (point.X == food->get_food()->point.X && point.Y == food->get_food()->point.Y) {
+        food->setIsEaten(true);
+        snake->grow_snake();
+        int newScore = player->getScore();
+        player->setScore(newScore+100);
+    }
 }
 
 void Logic::setup() {
@@ -64,14 +131,11 @@ void Logic::setup() {
     auto player = new Player();
 
     snake->create_snake();
-    int i = 0;
-    while(validate_snake(i++)) {
-        move_snake(player, snake);
+    while(validate_snake(validateSnake, player, snake)) {
         load_board(snake, food);
         display_game_state();
-        snake->grow_snake();
-        unsigned int microsecond = 500000;
-        usleep(microsecond);
+        move_snake(player, snake, food);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     delete player;

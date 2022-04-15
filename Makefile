@@ -7,8 +7,8 @@ build:
 	${GCC_FLAGS} ${SRC}/main.cpp ${SRC_LOGIC}/*.cpp -o ${BIN}/app.out
 
 run:
-	${GCC_FLAGS} ${SRC}/main.cpp ${SRC_LOGIC}/*.cpp -o ${BIN}/app.out
-	${BIN}/app.out
+	${GCC_FLAGS} ${SRC}/main.cpp ${SRC_LOGIC}/*.cpp -o ${BIN}/app.exe
+	${BIN}/app.exe
 
 drun:
 	docker run -it --rm -v ~/Desktop/snake-game:/snake-game a7a8afcc3dab
